@@ -1,1 +1,1 @@
-# 618-final-project
+# Heterogeneous Computing using OpenMP GPU
