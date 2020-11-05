@@ -1,4 +1,4 @@
-## Welcome to GitHub Pages
+## Heterogeneous Computing using OpenMP GPU
 
 You can use the [editor on GitHub](https://github.com/zyihong/618-final-project/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
 
