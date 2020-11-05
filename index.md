@@ -1,4 +1,4 @@
-## Heterogeneous Computing using OpenMP GPU
+## Heterogeneous Computing using OpenMP on GPUs
 
 ### SUMMARY
 
