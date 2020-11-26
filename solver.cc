@@ -7,8 +7,6 @@
 // #include <omp.h>
 #include "solver.h"
 
-using namespace std;
-
 void solver_serial(vector<vector<float>> grid) {
 	float diff;
 	bool converge = false;

@@ -25,7 +25,7 @@ int main(int argc, char* argv[]) {
 	fscanf(fptr, "%d %d", &m, &n);
 	printf("We have a grid of %d * %d\n", m, n);
 
-	vector<vector<float>> grid(m + 2, vector<float>(n + 2, 0.0f))
+	vector<vector<float>> grid(m + 2, vector<float>(n + 2, 0.0f));
 
 	int i = 0;
 

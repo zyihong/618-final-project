@@ -1,5 +1,12 @@
+CXX=~/gcc-offload/gcc-offload/install/bin/gcc -std=c++11 -fopenmp
+
 all: main
 
-main: main.c
-	# gcc -std=c99 -fopenmp -target=nvptx-none main.c -o main
-	gcc -std=c99 -fopenmp -foffload="-O3 -v" main.c -o main
+main: main.cc
+	$(CXX) main.cc solver.cc -o main -lstdc++
+
+.PHONY: clean
+
+clean:
+	rm main *.o
+

@@ -9,6 +9,8 @@
 #include <math.h>
 #include <omp.h>
 
+using namespace std;
+
 void solver_serial(vector<vector<float>> grid);
 void solver_omp(vector<vector<float>> grid);
 
