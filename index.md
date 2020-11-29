@@ -15,3 +15,12 @@ Check our [Proposal](https://docs.google.com/document/d/1ODHGpVbE_Mi9GmfAOWPZITt
 ### PLATFORM CHOICE
 
 ### SCHEDULE
+
+|  | Status | Task |
+| --- | --- | :-- |
+| Week1 | Finished | Figure out how to use the complier for OpenMP 4.5 ASAP, start an OpenMP implementation |
+| Week2 | Finished | Complete an OpenMP CPU implementation that can reasonably scale |
+| Week3 | Finished | Have a working OpenMP on GPU |
+| | Working | |
+| | | |
+| | | |
