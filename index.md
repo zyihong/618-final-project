@@ -1,6 +1,7 @@
 ## OpenMP on GPUs
 
 Check our [Proposal](https://docs.google.com/document/d/1ODHGpVbE_Mi9GmfAOWPZITt7Ah6zEe7cmiYSFjAQUw0/edit?ts=5fa34986#)
+
 Check our [milestone](https://docs.google.com/document/d/1vBdi9YX8FKgrUa8br-xBzTggGMQcvoeiqRx9tHPTjq0/edit?ts=5fc40584#)
 
 ### SUMMARY
