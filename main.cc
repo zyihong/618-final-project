@@ -48,8 +48,10 @@ int main(int argc, char* argv[]) {
 
 	double start_time = CycleTimer::currentSeconds();
 
-	// solver_serial(grid);
-	solver_omp_gpu(grid, m, n);
+	solver_serial(grid, m, n);
+	// solver_omp_gpu(grid, m, n);
+	// solver_omp_red_black(grid, m, n);
+	// solver_omp_cpu(grid, m, n);
 
 	double end_time = CycleTimer::currentSeconds();
 
