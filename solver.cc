@@ -106,8 +106,8 @@ void solver_omp_gpu(float* grid, int m, int n) {
 	while (!converge) {
 		float diff = 0.0f;
 
-		// if (count % 1000 == 0){
-		if (true){
+		if (count % 5 == 0){
+		// if (true){
 			#pragma omp target map(tofrom:grid[0:m * n]) map(tofrom:diff)
 			#pragma omp teams distribute reduction(+:diff)
 			for (int i = 1; i < m - 1; i++) {
@@ -115,28 +115,28 @@ void solver_omp_gpu(float* grid, int m, int n) {
 				for (int j = 1; j < n - 1; j++) {
 					float prev = grid[i * n + j];
 
-					*(grid + i * n + j) = (grid[(i - 1) * n + j] + grid[i * n + j] + grid[(i + 1) * n + j] + grid[i * n + j - 1] + grid[i * n + j + 1]) * 0.2f;
+					*(grid + i * n + j) = (grid[(i - 1) * n + j] + grid[(i + 1) * n + j] + grid[i * n + j] + grid[i * n + j - 1] + grid[i * n + j + 1]) * 0.2f;
 
 					diff += (grid[i * n + j] - prev > 0.0) ? (grid[i * n + j] - prev) : (prev - grid[i * n + j]);
 				}
 			}
-		// } else {
-		// 	#pragma omp target map(tofrom:grid[0:m * n])
-		// 	#pragma omp teams distribute parallel for
-		// 	for (int i = 1; i < m - 1; i++) {
-		// 		// #pragma parallel for reduction(+:diff)
-		// 		for (int j = 1; j < n - 1; j++) {
-		// 			float prev = grid[i * n + j];
+		} else {
+			#pragma omp target map(tofrom:grid[0:m * n])
+			#pragma omp teams distribute
+			for (int i = 1; i < m - 1; i++) {
+				#pragma parallel for
+				for (int j = 1; j < n - 1; j++) {
+					float prev = grid[i * n + j];
 
-		// 			*(grid + i * n + j) = (grid[(i - 1) * n + j] + grid[i * n + j] + grid[(i + 1) * n + j] + grid[i * n + j - 1] + grid[i * n + j + 1]) / 5.0;
+					*(grid + i * n + j) = (grid[(i - 1) * n + j] + grid[i * n + j] + grid[(i + 1) * n + j] + grid[i * n + j - 1] + grid[i * n + j + 1]) / 5.0;
 
-		// 			// diff += (grid[i * n + j] - prev);
-		// 		}
-		// 	}
+					// diff += (grid[i * n + j] - prev);
+				}
+			}
 		}
 
 		
-		if (diff / (m * n) < 1e-9) converge = true;
+		if (count % 5 == 0 && diff / (m * n) < 1e-9) converge = true;
 		count++;
 	}
 
