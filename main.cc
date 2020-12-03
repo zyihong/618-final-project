@@ -24,9 +24,11 @@ int main(int argc, char* argv[]) {
 	int m, n; // m * n grid
 	fscanf(fptr, "%d %d", &m, &n);
 	printf("We have a grid of %d * %d\n", m, n);
+	int grid_height = m / BLOCK_HEIGHT + 1;
+	int grid_width = n / BLOCK_WIDTH + 1;
 
-	// vector<vector<float>> grid(m, vector<float>(n, 0.0f));
 	float* grid = (float*)malloc(m * n * sizeof(float));
+	// float* grid = (float*)malloc(grid_height * BLOCK_HEIGHT * grid_width * BLOCK_WIDTH * sizeof(float));
 
 	int i = 0;
 
@@ -34,7 +36,13 @@ int main(int argc, char* argv[]) {
 		// cout << "current i: " << i << endl;
 		if (i == (m * n)) break;
 		// fscanf(fptr, "%f", &grid[(i / n)][(i % n)]);
-		fscanf(fptr, "%f", grid + i);
+		int pos = i;
+		// int grid_x = (i % n) / BLOCK_WIDTH;
+		// int grid_y = (i / n) / BLOCK_HEIGHT;
+		// int block_x = (i % n) % BLOCK_WIDTH;
+		// int block_y = (i / n) % BLOCK_HEIGHT;
+		// pos = (grid_y * grid_width + grid_x) * BLOCK_HEIGHT * BLOCK_WIDTH + block_y * BLOCK_WIDTH + block_x;
+		fscanf(fptr, "%f", grid + pos);
 		i++;
 	}
 
@@ -48,8 +56,8 @@ int main(int argc, char* argv[]) {
 
 	double start_time = CycleTimer::currentSeconds();
 
-	solver_serial(grid, m, n);
-	// solver_omp_gpu(grid, m, n);
+	// solver_serial(grid, m, n);
+	solver_omp_gpu(grid, m, n);
 	// solver_omp_red_black(grid, m, n);
 	// solver_omp_cpu(grid, m, n);
 
