@@ -15,7 +15,7 @@ int main(int argc, char* argv[]) {
 	char* inputFile = argv[2];
 	int numProcessors = atoi(argv[1]);
 
-	// omp_set_num_threads(numProcessors);
+	omp_set_num_threads(numProcessors);
 	omp_set_dynamic(0);
 
 	FILE *fptr;
@@ -59,14 +59,17 @@ int main(int argc, char* argv[]) {
 	// solver_serial(grid, m, n);
 	// solver_omp_gpu(grid, m, n);
 	// solver_omp_red_black(grid, m, n);
-	// solver_omp_cpu(grid, m, n);
+	solver_omp_cpu(grid, m, n);
 	// solver_omp_gpu_test(grid, m, n);
 	// solver_omp_cpu_test(grid, m, n);
-	solver_omp_blocking_test(grid, m, n);
+	// solver_omp_blocking(grid, m, n);
+	// solver_omp_gpu_test_slide(grid, m, n);
 
 	double end_time = CycleTimer::currentSeconds();
 
 	printf("The time consumed: %lf\n", end_time - start_time);
+
+	free(grid);
 
 	return 0;
 }

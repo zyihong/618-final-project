@@ -26,5 +26,6 @@ void solver_omp_red_black(float* grid, int m, int n);
 void solver_omp_gpu_test(float* grid, int m, int n);
 void solver_omp_cpu_test(float* grid, int m, int n);
 void solver_omp_blocking_test(float *grid, int m, int n);
+void solver_omp_gpu_test_slide(float* grid, int m, int n);
 
 #endif

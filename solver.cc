@@ -26,43 +26,17 @@ void solver_serial(float* grid, int m, int n) {
 	float diff;
 	bool converge = false;
 
-	while (!converge) {
-		diff = 0.0f;
-
-		for (int i = 1; i < m - 1; i++) {
-			for (int j = 1; j < n - 1; j++) {
-				float prev = grid[i * n + j];
-
-				*(grid + i * n + j) = (grid[(i - 1) * n + j] + grid[i * n + j] + grid[(i + 1) * n + j] + grid[i * n + j - 1] + grid[i * n + j + 1]) / 5.0;
-
-				float f = grid[i * n + j] - prev;
-				// if (f < 0.0f) printf("%f\n", f);
-				diff += (grid[i * n + j] - prev > 0.0) ? (grid[i * n + j] - prev) : (prev - grid[i * n + j]);
-			}
-		}
-
-		if (diff / (m * n) < 1e-9) converge = true;
-	}
-
 	// while (!converge) {
 	// 	diff = 0.0f;
 
 	// 	for (int i = 1; i < m - 1; i++) {
-	// 		for (int j = ((i % 2 == 0) ? 2 : 1); j < n - 1; j+=2) {
+	// 		for (int j = 1; j < n - 1; j++) {
 	// 			float prev = grid[i * n + j];
 
 	// 			*(grid + i * n + j) = (grid[(i - 1) * n + j] + grid[i * n + j] + grid[(i + 1) * n + j] + grid[i * n + j - 1] + grid[i * n + j + 1]) / 5.0;
 
-	// 			diff += (grid[i * n + j] - prev > 0.0) ? (grid[i * n + j] - prev) : (prev - grid[i * n + j]);
-	// 		}
-	// 	}
-
-	// 	for (int i = 1; i < m - 1; i++) {
-	// 		for (int j = ((i % 2 == 0) ? 1 : 2); j < n - 1; j+=2) {
-	// 			float prev = grid[i * n + j];
-
-	// 			*(grid + i * n + j) = (grid[(i - 1) * n + j] + grid[i * n + j] + grid[(i + 1) * n + j] + grid[i * n + j - 1] + grid[i * n + j + 1]) / 5.0;
-
+	// 			float f = grid[i * n + j] - prev;
+	// 			// if (f < 0.0f) printf("%f\n", f);
 	// 			diff += (grid[i * n + j] - prev > 0.0) ? (grid[i * n + j] - prev) : (prev - grid[i * n + j]);
 	// 		}
 	// 	}
@@ -70,7 +44,33 @@ void solver_serial(float* grid, int m, int n) {
 	// 	if (diff / (m * n) < 1e-9) converge = true;
 	// }
 
-	print_output("output_serial_no.txt", grid, m, n);
+	while (!converge) {
+		diff = 0.0f;
+
+		for (int i = 1; i < m - 1; i++) {
+			for (int j = ((i % 2 == 0) ? 2 : 1); j < n - 1; j+=2) {
+				float prev = grid[i * n + j];
+
+				*(grid + i * n + j) = (grid[(i - 1) * n + j] + grid[i * n + j] + grid[(i + 1) * n + j] + grid[i * n + j - 1] + grid[i * n + j + 1]) / 5.0;
+
+				diff += (grid[i * n + j] - prev > 0.0) ? (grid[i * n + j] - prev) : (prev - grid[i * n + j]);
+			}
+		}
+
+		for (int i = 1; i < m - 1; i++) {
+			for (int j = ((i % 2 == 0) ? 1 : 2); j < n - 1; j+=2) {
+				float prev = grid[i * n + j];
+
+				*(grid + i * n + j) = (grid[(i - 1) * n + j] + grid[i * n + j] + grid[(i + 1) * n + j] + grid[i * n + j - 1] + grid[i * n + j + 1]) / 5.0;
+
+				diff += (grid[i * n + j] - prev > 0.0) ? (grid[i * n + j] - prev) : (prev - grid[i * n + j]);
+			}
+		}
+
+		if (diff / (m * n) < 1e-9) converge = true;
+	}
+
+	// print_output("output_serial_no.txt", grid, m, n);
 }
 
 void solver_omp_cpu(float* grid, int m, int n) {
@@ -91,10 +91,38 @@ void solver_omp_cpu(float* grid, int m, int n) {
 			}
 		}
 
+		// #pragma omp parallel for reduction(+:diff)
+		// for (int i = 1; i < m - 1; i++) {
+		// 	for (int j = ((i % 2 == 0) ? 2 : 1); j < n - 1; j+=2) {
+		// 		float prev = grid[i * n + j];
+
+		// 		*(grid + i * n + j) = (grid[(i - 1) * n + j] + grid[i * n + j] + grid[(i + 1) * n + j] + grid[i * n + j - 1] + grid[i * n + j + 1]) / 5.0;
+
+		// 		// #pragma omp critical
+		// 		// {
+		// 			diff += (grid[i * n + j] - prev > 0.0) ? (grid[i * n + j] - prev) : (prev - grid[i * n + j]);
+		// 		// }
+		// 	}
+		// }
+
+		// #pragma omp parallel for reduction(+:diff)
+		// for (int i = 1; i < m - 1; i++) {
+		// 	for (int j = ((i % 2 == 0) ? 1 : 2); j < n - 1; j+=2) {
+		// 		float prev = grid[i * n + j];
+
+		// 		*(grid + i * n + j) = (grid[(i - 1) * n + j] + grid[i * n + j] + grid[(i + 1) * n + j] + grid[i * n + j - 1] + grid[i * n + j + 1]) / 5.0;
+
+		// 		// #pragma omp critical
+		// 		// {
+		// 			diff += (grid[i * n + j] - prev > 0.0) ? (grid[i * n + j] - prev) : (prev - grid[i * n + j]);
+		// 		// }
+		// 	}
+		// }
+
 		if (diff / (m * n) < 1e-9) converge = true;
 	}
 
-	print_output("output_cpu.txt", grid, m, n);
+	// print_output("output_cpu.txt", grid, m, n);
 }
 
 void solver_omp_gpu(float* grid, int m, int n) {
@@ -146,8 +174,8 @@ void solver_omp_gpu(float* grid, int m, int n) {
 }
 
 void solver_omp_blocking(float *grid, int m, int n) {
-	int grid_height = m / BLOCK_HEIGHT + 1;
-	int grid_width = n / BLOCK_WIDTH + 1;
+	int grid_height = m / BLOCK_HEIGHT;
+	int grid_width = n / BLOCK_WIDTH;
 	float diff = 0.0f;
 	bool converge = false;
 
@@ -155,7 +183,7 @@ void solver_omp_blocking(float *grid, int m, int n) {
 	while (!converge) {
 
 		#pragma omp target
-		#pragma omp teams distribute parallel for reduction(+:diff)
+		#pragma omp teams distribute parallel for collapse(4)
 		for (int i = 0; i < grid_height; i++) {
 			// #pragma parallel for reduction(+:diff)
 			for (int j = 0; j < grid_width; j++) {
@@ -168,7 +196,10 @@ void solver_omp_blocking(float *grid, int m, int n) {
 
 							*(grid + x * n + y) = (grid[(x - 1) * n + y] + grid[x * n + y] + grid[(x + 1) * n + y] + grid[x * n + y - 1] + grid[x * n + y + 1]) / 5.0;
 
-							diff += (grid[x * n + y] - prev > 0.0) ? (grid[x * n + y] - prev) : (prev - grid[x * n + y]);
+							#pragma omp critical
+							{
+								diff += (grid[x * n + y] - prev > 0.0) ? (grid[x * n + y] - prev) : (prev - grid[x * n + y]);
+							}
 						}
 					}
 				}
@@ -183,43 +214,128 @@ void solver_omp_red_black(float* grid, int m, int n) {
 	float diff;
 	bool converge = false;
 
+	int count = 0;
+
 	while (!converge) {
 		diff = 0.0f;
 
-		#pragma omp target map(grid[0:m * n])
-		#pragma omp teams distribute parallel for
-		for (int i = 1; i < m - 1; i++) {
-			for (int j = ((i % 2 == 0) ? 2 : 1); j < n - 1; j+=2) {
-				float prev = grid[i * n + j];
+		if (count % 100 == 0) {
 
-				*(grid + i * n + j) = (grid[(i - 1) * n + j] + grid[i * n + j] + grid[(i + 1) * n + j] + grid[i * n + j - 1] + grid[i * n + j + 1]) / 5.0;
+			#pragma omp target map(grid[0:m * n])
+			#pragma omp teams distribute parallel for reduction(+:diff) collapse(2)
+			// #pragma omp target
+			// #pragma omp parallel for
+			for (int i = 1; i < m - 1; i += 2) {
+				for (int j = 1; j < n - 1; j+=2) {
+					float prev = grid[i * n + j];
 
-				#pragma omp critical
-				{
-					diff += (grid[i * n + j] - prev > 0.0) ? (grid[i * n + j] - prev) : (prev - grid[i * n + j]);
+					*(grid + i * n + j) = (grid[(i - 1) * n + j] + grid[i * n + j] + grid[(i + 1) * n + j] + grid[i * n + j - 1] + grid[i * n + j + 1]) / 5.0;
+
+					// #pragma omp critical
+					// {
+						diff += (grid[i * n + j] - prev > 0.0) ? (grid[i * n + j] - prev) : (prev - grid[i * n + j]);
+					// }
+				}
+			}
+
+			#pragma omp target map(grid[0:m * n])
+			#pragma omp teams distribute parallel for reduction(+:diff) collapse(2)
+			// #pragma omp target
+			// #pragma omp parallel for
+			for (int i = 2; i < m - 1; i += 2) {
+				for (int j = 2; j < n - 1; j+=2) {
+					float prev = grid[i * n + j];
+
+					*(grid + i * n + j) = (grid[(i - 1) * n + j] + grid[i * n + j] + grid[(i + 1) * n + j] + grid[i * n + j - 1] + grid[i * n + j + 1]) / 5.0;
+
+					// #pragma omp critical
+					// {
+						diff += (grid[i * n + j] - prev > 0.0) ? (grid[i * n + j] - prev) : (prev - grid[i * n + j]);
+					// }
+				}
+			}
+
+			#pragma omp target map(grid[0:m * n])
+			#pragma omp teams distribute parallel for reduction(+:diff) collapse(2)
+			// #pragma omp target
+			// #pragma omp parallel for
+			for (int i = 1; i < m - 1; i++) {
+				for (int j = 2; j < n - 1; j+=2) {
+					float prev = grid[i * n + j];
+
+					*(grid + i * n + j) = (grid[(i - 1) * n + j] + grid[i * n + j] + grid[(i + 1) * n + j] + grid[i * n + j - 1] + grid[i * n + j + 1]) / 5.0;
+
+					// #pragma omp critical
+					// {
+						diff += (grid[i * n + j] - prev > 0.0) ? (grid[i * n + j] - prev) : (prev - grid[i * n + j]);
+					// }
+				}
+			}
+
+			#pragma omp target map(grid[0:m * n])
+			#pragma omp teams distribute parallel for reduction(+:diff) collapse(2)
+			// #pragma omp target
+			// #pragma omp parallel for
+			for (int i = 2; i < m - 1; i += 2) {
+				for (int j = 1; j < n - 1; j+=2) {
+					float prev = grid[i * n + j];
+
+					*(grid + i * n + j) = (grid[(i - 1) * n + j] + grid[i * n + j] + grid[(i + 1) * n + j] + grid[i * n + j - 1] + grid[i * n + j + 1]) / 5.0;
+
+					// #pragma omp critical
+					// {
+						diff += (grid[i * n + j] - prev > 0.0) ? (grid[i * n + j] - prev) : (prev - grid[i * n + j]);
+					// }
+				}
+			}
+		}
+		else {
+			#pragma omp target map(grid[0:m * n])
+			#pragma omp teams distribute parallel for collapse(2)
+			for (int i = 1; i < m - 1; i += 2) {
+				for (int j = 1; j < n - 1; j+=2) {
+					// float prev = grid[i * n + j];
+
+					*(grid + i * n + j) = (grid[(i - 1) * n + j] + grid[i * n + j] + grid[(i + 1) * n + j] + grid[i * n + j - 1] + grid[i * n + j + 1]) / 5.0;
+				}
+			}
+
+			#pragma omp target map(grid[0:m * n])
+			#pragma omp teams distribute parallel for reduction(+:diff) collapse(2)
+			for (int i = 2; i < m - 1; i += 2) {
+				for (int j = 2; j < n - 1; j+=2) {
+					// float prev = grid[i * n + j];
+
+					*(grid + i * n + j) = (grid[(i - 1) * n + j] + grid[i * n + j] + grid[(i + 1) * n + j] + grid[i * n + j - 1] + grid[i * n + j + 1]) / 5.0;
+				}
+			}
+
+			#pragma omp target map(grid[0:m * n])
+			#pragma omp teams distribute parallel for reduction(+:diff) collapse(2)
+			for (int i = 1; i < m - 1; i++) {
+				for (int j = 2; j < n - 1; j+=2) {
+					// float prev = grid[i * n + j];
+
+					*(grid + i * n + j) = (grid[(i - 1) * n + j] + grid[i * n + j] + grid[(i + 1) * n + j] + grid[i * n + j - 1] + grid[i * n + j + 1]) / 5.0;
+				}
+			}
+
+			#pragma omp target map(grid[0:m * n])
+			#pragma omp teams distribute parallel for reduction(+:diff) collapse(2)
+			for (int i = 2; i < m - 1; i += 2) {
+				for (int j = 1; j < n - 1; j+=2) {
+					// float prev = grid[i * n + j];
+
+					*(grid + i * n + j) = (grid[(i - 1) * n + j] + grid[i * n + j] + grid[(i + 1) * n + j] + grid[i * n + j - 1] + grid[i * n + j + 1]) / 5.0;
 				}
 			}
 		}
 
-		#pragma omp target map(grid[0:m * n])
-		#pragma omp teams distribute parallel for
-		for (int i = 1; i < m - 1; i++) {
-			for (int j = ((i % 2 == 0) ? 1 : 2); j < n - 1; j+=2) {
-				float prev = grid[i * n + j];
-
-				*(grid + i * n + j) = (grid[(i - 1) * n + j] + grid[i * n + j] + grid[(i + 1) * n + j] + grid[i * n + j - 1] + grid[i * n + j + 1]) / 5.0;
-
-				#pragma omp critical
-				{
-					diff += (grid[i * n + j] - prev > 0.0) ? (grid[i * n + j] - prev) : (prev - grid[i * n + j]);
-				}
-			}
-		}
-
-		if (diff / (m * n) < 1e-9) converge = true;
+		if (count % 100 == 0 && diff / (m * n) < 1e-9) converge = true;
+		count++;
 	}
 
-	print_output("output_red_black.txt", grid, m, n);
+	// print_output("output_red_black.txt", grid, m, n);
 }
 
 void solver_omp_gpu_test(float* grid, int m, int n) {
@@ -229,7 +345,7 @@ void solver_omp_gpu_test(float* grid, int m, int n) {
 
 	// #pragma omp target data map(grid[0:m * n])
 	// while (!converge) {
-	for (int c = 0; c < 1000; c++) {
+	// for (int c = 0; c < 1000; c++) {
 		// float diff = 0.0f;
 		
 		// #pragma omp target map(tofrom:grid[0:m * n]) map(tofrom:diff)
@@ -239,15 +355,16 @@ void solver_omp_gpu_test(float* grid, int m, int n) {
 		for (int i = 1; i < m - 1; i++) {
 			// #pragma parallel for reduction(+:diff)
 			for (int j = 1; j < n - 1; j++) {
-				float prev = grid[i * n + j];
+				// float prev = grid[i * n + j];
 
-				*(grid + i * n + j) = (grid[(i - 1) * n + j] + grid[i * n + j] + grid[(i + 1) * n + j] + grid[i * n + j - 1] + grid[i * n + j + 1]) * 0.2f;
+				// *(grid + i * n + j) = (grid[(i - 1) * n + j] + grid[i * n + j] + grid[(i + 1) * n + j] + grid[i * n + j - 1] + grid[i * n + j + 1]) * 0.2f;
 
+				*(grid + i * n + j) = (grid[i * n + j - 1] + grid[i * n + j] + grid[i * n + j + 1]) / 3.0f;
 				// diff += (grid[i * n + j] - prev > 0.0) ? (grid[i * n + j] - prev) : (prev - grid[i * n + j]);
 			}
 		}
 		
-	}
+	// }
 
 	// print_output("output_gpu_test.txt", grid, m, n);
 }
@@ -256,7 +373,7 @@ void solver_omp_cpu_test(float* grid, int m, int n) {
 	// float diff;
 	// bool converge = false;
 
-	for (int c = 0; c < 1000; c++) {
+	// for (int c = 0; c < 1000; c++) {
 
 		#pragma omp parallel for
 		for (int i = 1; i < m - 1; i++) {
@@ -270,7 +387,7 @@ void solver_omp_cpu_test(float* grid, int m, int n) {
 		}
 
 		// if (diff / (m * n) < 1e-9) converge = true;
-	}
+	// }
 
 	// print_output("output_cpu.txt", grid, m, n);
 }
@@ -307,4 +424,36 @@ void solver_omp_blocking_test(float *grid, int m, int n) {
 	}
 
 	// print_output("output_block_test.txt", grid, m, n);
+}
+
+void solver_omp_gpu_test_slide(float* grid, int m, int n) {
+	// float diff = 0.0f;
+	bool converge = false;
+	// int count = 0;
+
+	float* grid2 = (float*)malloc(m * n * sizeof(float));
+
+	// #pragma omp target data map(grid[0:m * n])
+	// while (!converge) {
+	// for (int c = 0; c < 1000; c++) {
+		// float diff = 0.0f;
+		
+		// #pragma omp target map(tofrom:grid[0:m * n]) map(tofrom:diff)
+		// #pragma omp teams distribute reduction(+:diff)
+		#pragma omp target map(grid[0:m * n], grid2[0: m * n]) 
+		#pragma omp teams distribute parallel for collapse(2)
+		for (int i = 1; i < m - 1; i++) {
+			// #pragma parallel for reduction(+:diff)
+			for (int j = 1; j < n - 1; j++) {
+				// float prev = grid[i * n + j];
+
+				*(grid2 + i * n + j) = (grid[(i - 1) * n + j] + grid[i * n + j] + grid[(i + 1) * n + j] + grid[i * n + j - 1] + grid[i * n + j + 1]) * 0.2f;
+
+				// diff += (grid[i * n + j] - prev > 0.0) ? (grid[i * n + j] - prev) : (prev - grid[i * n + j]);
+			}
+		}
+		
+	// }
+
+	// print_output("output_gpu_test.txt", grid, m, n);
 }
