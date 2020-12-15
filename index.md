@@ -4,6 +4,8 @@ Check our [Proposal](https://docs.google.com/document/d/1ODHGpVbE_Mi9GmfAOWPZITt
 
 Check our [Milestone](https://docs.google.com/document/d/1vBdi9YX8FKgrUa8br-xBzTggGMQcvoeiqRx9tHPTjq0/edit?ts=5fc40584#)
 
+Check our [Result](https://drive.google.com/file/d/1p3meHNWvMPHHGIezobuvdbJeaRpnkInv/view?usp=sharing)
+
 ### SUMMARY
 
 ### BACKGROUND
