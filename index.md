@@ -8,6 +8,8 @@ Check our [Result](https://drive.google.com/file/d/1p3meHNWvMPHHGIezobuvdbJeaRpn
 
 ### SUMMARY
 
+We implemented the grid solver （partial differential equation (PDE) on a (N + 2) * (N + 2) grid） using OpenMP on both CPU and GPU. We explored different techniques to optimize both versions and compared their performance. We demonstrated what we used and why those techniques works.  Besides, we also showed performance gains of each optimization and also the comparative performance of graph between the CPU OpenMP and the GPU OpenMP.
+
 ### BACKGROUND
 
 ### THE CHALLENGE
