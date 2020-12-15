@@ -20,6 +20,8 @@ We implemented the grid solver （partial differential equation (PDE) on a (N + 
 
 ### PLATFORM CHOICE
 
+We used C++ and OpenMP 4.5 for the coding and the machine we used was a Core2 i7-8850H 2.6GHz (6 cores and 12 threads) and a GTX 1050Ti Max-Q graphics card.
+
 ### SCHEDULE
 
 |  | Status | Task | Assignee |
